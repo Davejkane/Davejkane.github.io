@@ -45,7 +45,7 @@
 &lt;p&gt;So that was a really basic alternative way to view some common football stats. I plan to follow up with more football related articles soon, especially seeing as I have a very detailed football data set. More about that &lt;a href=&#34;http://localhost:1313/webscraping-fun-stats&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
 
 &lt;script src=&#34;https://d3js.org/d3.v4.min.js&#34;&gt;&lt;/script&gt;
-&lt;script src=&#34;http://localhost:1313/paretoscorers.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://davejkane.github.io/paretoscorers.js&#34;&gt;&lt;/script&gt;
 </description>
     </item>
     
