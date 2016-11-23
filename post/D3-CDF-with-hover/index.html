@@ -1,0 +1,331 @@
+    <!DOCTYPE html>
+<html lang="en-uk">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="Dave J Kane">
+		<meta name="description" content="A Data and Programming Blog">
+		<meta name="generator" content="Hugo 0.17" />
+		<title>A CDF Graph with Hover Tooltips Using D3.js &middot; Dave J Kane</title>
+		<link rel="shortcut icon" href="https://davejkane.github.io/images/favicon.ico">
+		<link rel="stylesheet" href="https://davejkane.github.io/css/style.css">
+		<link rel="stylesheet" href="https://davejkane.github.io/css/highlight.css">
+		
+		<link rel="stylesheet" href="https://davejkane.github.io/paretoscorers.css">
+		
+
+		
+		<link rel="stylesheet" href="https://davejkane.github.io/css/monosocialiconsfont.css">
+		
+
+		
+	</head>
+
+    <body>
+       <nav class="main-nav">
+	
+	
+		<a href='https://davejkane.github.io/'> <span class="arrow">←</span>Home</a>
+	
+
+	
+		<a href='https://davejkane.github.io/about'>About</a>
+	
+
+	
+</nav>
+
+        <section id="wrapper">
+            <article class="post">
+                <header>
+                    <h1>A CDF Graph with Hover Tooltips Using D3.js</h1>
+                    <h2 class="headline">
+                    November 20, 2016 
+                    <br>
+                    
+                    
+                        
+                            <a href="https://davejkane.github.io/tags/d3">D3</a>
+                        
+                            <a href="https://davejkane.github.io/tags/javascript">Javascript</a>
+                        
+                            <a href="https://davejkane.github.io/tags/visualisation">Visualisation</a>
+                        
+                            <a href="https://davejkane.github.io/tags/data">Data</a>
+                        
+                    
+                    
+                    </h2>
+                </header>
+                <section id="post-body">
+                    
+
+<h1 id="creating-a-cdf-graph-with-d3-from-csv-data">Creating a CDF graph with D3 from csv data</h1>
+
+<p>In this short post, I&rsquo;ll show you how I made the cumulative density function graph, with hover over tooltips, as used in my previous post <a href="/does-football-follow-pareto">&ldquo;Does football follow the pareto principal&rdquo;</a>. Nothing here is particularly innovative, it&rsquo;s mostly reuse of code from the net.</p>
+
+<h2 id="cdf-graph">CDF graph.</h2>
+
+<p>First up, here&rsquo;s the graph.</p>
+
+<div id="paretoGraph"></div>
+
+<p>And here&rsquo;s the full code for the graph</p>
+
+<pre><code>/*Here up open up our csv file with the d3.csv function and load it into the dataset variable.
+Our csv file contains two columms , players and goals with the names of the players and the
+number of goals that player scored in the season. */
+var dataSet;
+d3.csv('../scorers.csv', function(d) {
+    dataSet = d;
+
+/*To make the cumulative line, create an array called cumgoals.
+Loop through the dataset and append the cumulative goals to the array*/
+cumGoals = [];
+cumGoals.push(dataSet[0].goals);
+dataLength = dataSet.length;
+for (i = 1; i &lt; dataLength; i++) {
+    cumGoals.push(parseInt(dataSet[i].goals) + parseInt(cumGoals[i - 1]))
+};
+
+/*Calculate the total number of goals.*/
+totalGoals = d3.sum(dataSet, function(d) {
+    return d.goals;
+});
+
+/*Defining the margins, width and height of the graph.*/
+var margin = {top: 30, right: 20, bottom: 50, left: 50},
+width = 480 - margin.left - margin.right,
+//Keep the height small for data banking
+height = 240 - margin.top - margin.bottom;
+
+/*Defining the x and y scales*/
+var x = d3.scaleLinear().range([0, width]);
+var y = d3.scaleLinear().range([height, 0]);
+
+/*Define the axes*/
+var formatAsPercentage = d3.format('.0%');
+var xAxis = d3.axisBottom().scale(x).ticks(5).tickFormat(formatAsPercentage);
+var yAxis = d3.axisLeft().scale(y).ticks(5).tickFormat(formatAsPercentage);
+
+/*Create line function for percentage of goals per player*/
+var valueline = d3.line()
+.x(function(d, i) { return x(i / (dataSet.length - 1)); })
+.y(function(d) { return y(d.goals / totalGoals)});
+
+/*Create the line function for the cumulative line (CDF)*/
+var totalline = d3.line()
+.x(function(d, i){ return x(i / (dataSet.length - 1)); })
+.y(function(d){
+    return y(d / totalGoals);
+});
+
+// Define the div for the tooltip
+var div = d3.select(&quot;body&quot;).append(&quot;div&quot;)   
+.attr(&quot;class&quot;, &quot;tooltip&quot;)               
+.style(&quot;opacity&quot;, 0);
+
+// Create the SVG element
+var svg = d3.select(&quot;#paretoGraph&quot;)
+.append(&quot;svg&quot;)
+    .attr(&quot;width&quot;, width + margin.left + margin.right)
+    .attr(&quot;height&quot;, height + margin.top + margin.bottom)
+.append(&quot;g&quot;)
+    .attr(&quot;transform&quot;, 
+          &quot;translate(&quot; + margin.left + &quot;,&quot; + margin.top + &quot;)&quot;);
+
+// Scale the range of the data
+x.domain([0, 1]);
+y.domain([0, 1]);
+
+
+// Add the valueline path.
+svg.append(&quot;path&quot;)
+    .attr(&quot;class&quot;, &quot;line&quot;)
+    .attr(&quot;d&quot;, valueline(dataSet));
+
+// Add the totalline path
+svg.append(&quot;path&quot;)
+    .attr(&quot;class&quot;, &quot;line&quot;)
+    .attr(&quot;d&quot;, totalline(cumGoals));
+
+
+// Add the scatterplot
+svg.selectAll(&quot;dot&quot;)    
+    .data(dataSet)          
+.enter().append(&quot;circle&quot;)                               
+    .attr(&quot;r&quot;, 2)       
+    .attr(&quot;cx&quot;, function(d, i) { return x(i / (dataSet.length - 1)); })      
+    .attr(&quot;cy&quot;, function(d) { return y(d.goals / totalGoals); })
+    .on(&quot;mouseover&quot;, function(d) {      
+        div.transition()        
+            .duration(200)      
+            .style(&quot;opacity&quot;, .9);      
+        div .html(d.players + ': ' + d.goals)   
+            .style(&quot;left&quot;, (d3.event.pageX) + &quot;px&quot;)     
+            .style(&quot;top&quot;, (d3.event.pageY - 28) + &quot;px&quot;);    
+        })                  
+    .on(&quot;mouseout&quot;, function(d) {       
+        div.transition()        
+            .duration(500)      
+            .style(&quot;opacity&quot;, 0);   
+    });
+
+// Add the X Axis
+svg.append(&quot;g&quot;)
+    .attr(&quot;class&quot;, &quot;x axis&quot;)
+    .attr(&quot;transform&quot;, &quot;translate(0,&quot; + height + &quot;)&quot;)
+    .call(xAxis);
+
+// Add the X Axis label
+svg.append(&quot;text&quot;)
+        .attr(&quot;transform&quot;, &quot;translate(&quot; + (width / 2) + &quot; ,&quot; + (height + margin.bottom - 10) + &quot;)&quot;)
+        .style(&quot;text-anchor&quot;, &quot;middle&quot;)
+        .text(&quot;Percent of Players&quot;);
+
+// Add the Y Axis
+svg.append(&quot;g&quot;)
+    .attr(&quot;class&quot;, &quot;y axis&quot;)
+    .call(yAxis);
+
+// Add the Y Axis label
+svg.append(&quot;text&quot;)
+        .attr(&quot;transform&quot;, &quot;rotate(-90)&quot;)
+        .attr(&quot;y&quot;, 0 - margin.left)
+        .attr(&quot;x&quot;,0 - (height / 2))
+        .attr(&quot;dy&quot;, &quot;1em&quot;)
+        .style(&quot;text-anchor&quot;, &quot;middle&quot;)
+        .text(&quot;Percent of Goals&quot;);
+
+// Close the csv function
+});
+</code></pre>
+
+<p>So hopefully that reads well enough. As I said, there&rsquo;s nothing particularly innovative about this graph.</p>
+
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="/paretoscorers.js"></script>
+
+                </section>
+            </article>
+            <footer id="post-meta" class="clearfix">
+                <a href="https://twitter.com/davejkane">
+                        <img class="avatar" src="https://davejkane.github.io/images/avatar.jpg">
+                        <div>
+                            <span class="dark">Dave J Kane</span>
+                            <span>Just a geek</span>
+                        </div>
+                    </a>
+                <section id="sharing">
+                    <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fdavejkane.github.io%2fpost%2fD3-CDF-with-hover%2f - A%20CDF%20Graph%20with%20Hover%20Tooltips%20Using%20D3.js by @davejkane"><span class="icon-twitter"> Tweet</span></a>
+
+<a class="facebook" href="#" onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+      'facebook-share-dialog',
+      'width=626,height=436');
+    return false;"><span class="icon-facebook-rect"> Share</span>
+</a>
+
+                </section>
+            </footer>
+
+            <div id="disqus_thread"></div>
+<script type="text/javascript">
+    var disqus_shortname = 'http-davejkane-com';
+    var disqus_identifier = 'https:\/\/davejkane.github.io\/post\/D3-CDF-with-hover\/';
+    var disqus_title = 'A CDF Graph with Hover Tooltips Using D3.js';
+    var disqus_url = 'https:\/\/davejkane.github.io\/post\/D3-CDF-with-hover\/';
+
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
+            <ul id="post-list" class="archive readmore">
+    <h3>Read more</h3>
+    
+    
+        
+        <li>
+            <a href="https://davejkane.github.io/post/does-football-follow-pareto/">Does Football Follow the Pareto Principal<aside class="dates">Nov 21</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://davejkane.github.io/post/D3-CDF-with-hover/">A CDF Graph with Hover Tooltips Using D3.js<aside class="dates">Nov 20</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://davejkane.github.io/post/json-sqlite-csv/">JSON to SQLite to csv with Python<aside class="dates">Nov 20</aside></a>
+        </li>
+        
+   
+    
+        
+        <li>
+            <a href="https://davejkane.github.io/post/webscraping-fun-stats/">Webscraping for Fun and Stats<aside class="dates">Nov 20</aside></a>
+        </li>
+        
+   
+</ul>
+            <footer id="footer">
+    
+        <div id="social">
+
+	
+	
+    
+    <a class="symbol" href="https://www.github.com/davejkane">
+        circlegithub
+    </a>
+    
+    <a class="symbol" href="https://www.twitter.com/davejkane">
+        circletwitterbird
+    </a>
+    
+
+
+</div>
+
+    
+    <p class="small">
+    
+        © Copyright 2016 Dave J Kane
+    
+    </p>
+</footer>
+
+        </section>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://davejkane.github.io/js/main.js"></script>
+<script src="https://davejkane.github.io/js/highlight.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+
+
+
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-87879303-1', 'auto');
+ga('send', 'pageview');
+</script>
+
+
+    </body>
+</html>

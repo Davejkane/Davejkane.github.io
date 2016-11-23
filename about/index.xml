@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>About-rsses on Dave J Kane</title>
+    <link>https://davejkane.github.io/about/index.xml</link>
+    <description>Recent content in About-rsses on Dave J Kane</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-uk</language>
+    <lastBuildDate>Tue, 15 Nov 2016 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://davejkane.github.io/about/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>About</title>
+      <link>https://davejkane.github.io/about/</link>
+      <pubDate>Tue, 15 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://davejkane.github.io/about/</guid>
+      <description>&lt;p&gt;This is my safe space where I can write about things that interest me. Mostly I plan on writing about programming and data, coz I like it. But I might occasionally stray onto other topics. We&amp;rsquo;ll see.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

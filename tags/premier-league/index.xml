@@ -10,15 +10,15 @@
     
     <item>
       <title>Does Football Follow the Pareto Principal</title>
-      <link>https://davejkane.github.io/Does-football-follow-pareto/</link>
-      <pubDate>Tue, 15 Nov 2016 00:00:00 +0000</pubDate>
+      <link>https://davejkane.github.io/post/does-football-follow-pareto/</link>
+      <pubDate>Mon, 21 Nov 2016 00:00:00 +0000</pubDate>
       
-      <guid>https://davejkane.github.io/Does-football-follow-pareto/</guid>
+      <guid>https://davejkane.github.io/post/does-football-follow-pareto/</guid>
       <description>
 
 &lt;p&gt;Let&amp;rsquo;s keep this first post nice and basic.&lt;/p&gt;
 
-&lt;p&gt;&lt;em&gt;If you&amp;rsquo;re intested in data science, you may be interested in the accompanying posts &lt;a href=&#34;https://davejkane.github.io/webscraping-fun-stats&#34;&gt;Web scraping for fun and stats&lt;/a&gt;, &lt;a href=&#34;https://davejkane.github.io/json-sqlite-csv&#34;&gt;JSON to SQLite to csv - Data transforations&lt;/a&gt; and &lt;a href=&#34;https://davejkane.github.io/D3-CDF-hover-tooltips&#34;&gt;D3: A CDF graph with hover tooltips&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;If you&amp;rsquo;re intested in data science, you may be interested in the accompanying posts &lt;a href=&#34;https://davejkane.github.io/webscraping-fun-stats&#34;&gt;Web scraping for fun and stats&lt;/a&gt;, &lt;a href=&#34;https://davejkane.github.io/json-sqlite-csv&#34;&gt;JSON to SQLite to csv - Data transforations&lt;/a&gt; and &lt;a href=&#34;https://davejkane.github.io/D3-CDF-with-hover&#34;&gt;D3: A CDF graph with hover tooltips&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
 
 &lt;h2 id=&#34;the-pareto-principal&#34;&gt;The Pareto principal&lt;/h2&gt;
 
@@ -38,11 +38,11 @@
 
 &lt;h2 id=&#34;it-s-true&#34;&gt;It&amp;rsquo;s True!&lt;/h2&gt;
 
-&lt;p&gt;Around 20% of the players do indeed score around 80% of the goals. And here&amp;rsquo;s a table of the top 20% of scoring players.&lt;/p&gt;
+&lt;p&gt;Around 20% of the players do indeed score around 80% of the goals.&lt;/p&gt;
 
 &lt;h2 id=&#34;what-s-next&#34;&gt;What&amp;rsquo;s next&lt;/h2&gt;
 
-&lt;p&gt;So that was a really basic alternative way to view some common football stats. I plan to follow up with more football related articles soon, especially seeing as I have a very detailed football data set. More about that &lt;a href=&#34;http://localhost:1313/webscraping-fun-stats&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;So that was a really basic alternative way to view some common football stats. I plan to follow up with more football related articles soon, especially seeing as I have a very detailed football data set. More about that &lt;a href=&#34;https://davejkane.github.io/webscraping-fun-stats&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
 
 &lt;script src=&#34;https://d3js.org/d3.v4.min.js&#34;&gt;&lt;/script&gt;
 &lt;script src=&#34;https://davejkane.github.io/paretoscorers.js&#34;&gt;&lt;/script&gt;

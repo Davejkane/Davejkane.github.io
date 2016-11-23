@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Dave J Kane</title>
+    <link>https://davejkane.github.io/tags/selenium/index.xml</link>
+    <description>Recent content on Dave J Kane</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-uk</language>
+    <atom:link href="https://davejkane.github.io/tags/selenium/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Webscraping for Fun and Stats</title>
+      <link>https://davejkane.github.io/post/webscraping-fun-stats/</link>
+      <pubDate>Sun, 20 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://davejkane.github.io/post/webscraping-fun-stats/</guid>
+      <description>
+
+&lt;h2 id=&#34;webscraping&#34;&gt;Webscraping&lt;/h2&gt;
+
+&lt;p&gt;Webscraping is the art of programmatically browsing the web to retrieve information. It&amp;rsquo;s fun. You get to feel a bit like a hacker, even though you probably don&amp;rsquo;t actually want to hack into non-public facing websites to get data. And for a lot of publically available data, it is the most practical way to get it.&lt;/p&gt;
+
+&lt;p&gt;Webscraping is not web crawling. Web crawling is more open ended and basically just used to index websites, rather than extract information. Webscraping can well be looked down upon as an evil act, with connotations of DDoS and cracking. But it&amp;rsquo;s also possible to scrape data from a website politely, without burdoning the webserver and breaching terms of use.&lt;/p&gt;
+
+&lt;p&gt;The hardest bit about web scraping is findning good information and tools. And that&amp;rsquo;s where I hope this article can help. Many web scraping tools focus on interacting with the html returned from a HTTP request, but with the rise of modern javascript rendered websites, that approach is pretty limited, because increasingly the information you see on the page was sent with secondary requests, usually in the form of JSON or xml.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-solution-headless-web-browsing&#34;&gt;The solution - Headless Web Browsing.&lt;/h2&gt;
+
+&lt;p&gt;The solution to this is to use a headless web browser and browse the site programmatically. A headless web browser is just a browser without a graphical interface, so you pretty much have to use programming to control it. But it&amp;rsquo;s easy. If you&amp;rsquo;re reading this you&amp;rsquo;ve already done the hard part of finding decent info. If I do say so myself.&lt;/p&gt;
+
+&lt;h2 id=&#34;the-tools&#34;&gt;The tools&lt;/h2&gt;
+
+&lt;p&gt;We&amp;rsquo;re going to use python for this. It&amp;rsquo;s the goto language for such scripty things, but if your favourite programming language supports Selenium Web Driver, and it probably does, then feel free to use that instead. I hope the information in the rest of this post will still be useful to you.&lt;/p&gt;
+
+&lt;h3 id=&#34;selenium-web-driver&#34;&gt;Selenium Web Driver&lt;/h3&gt;
+
+&lt;p&gt;First install Selenium web driver. Selenium web driver provides an interface for you to control a browser programmatically. Just open up your favourite search engine, probably Bing, and search for &amp;ldquo;install selenium webdriver [your favourite programming language] [your operating system]&amp;rdquo;. Follow those instructions. This post isn&amp;rsquo;t the place to list all of the combinations of architectures and programming languages.&lt;/p&gt;
+
+&lt;h3 id=&#34;phantomjs&#34;&gt;PhantomJS&lt;/h3&gt;
+
+&lt;p&gt;Next you&amp;rsquo;re going to have to install PhantomJS. PhantomJS is the actual headless web browser that you will be controlling with Selenium. You&amp;rsquo;ll need NodeJS and the NPM to install it, so if you don&amp;rsquo;t have Node installed, head over to &lt;a href=&#34;https://nodejs.org&#34;&gt;nodejs.org&lt;/a&gt; and follow the installaton instructions for your computer.&lt;/p&gt;
+
+&lt;p&gt;Once you&amp;rsquo;ve done that you can install PhantomJS from npm by typing the following into a terminal.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;npm install phantomjs -g 
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;acessing-a-page&#34;&gt;Acessing a page&lt;/h2&gt;
+
+&lt;p&gt;Create a new python script &lt;strong&gt;whatever_you_want_to_call_it.py&lt;/strong&gt; and open it up in your favourite text editor and enter the following:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;from selenium import webdriver
+import time
+
+driver = webdriver.PhantomJS()
+driver.set_window_size(1024, 768)
+driver.get(&#39;https://google.com&#39;)
+print &#39;Sleeping&#39;
+time.sleep(3)
+driver.save_screenshot(&#39;screen.png&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Go ahead and run your script with&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;python whatever_you_called_your_file.py
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;open screen.png
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Wow, huh. pretty, pretty, pretty, pretty good. Consider that the &amp;ldquo;hello world&amp;rdquo; of webscraping. If you got it to work then you&amp;rsquo;re ready to scrape the web for fun and stats. That little sleep in there, that&amp;rsquo;s just to make sure all the javascript has rendered on the page. Not really a big deal when you&amp;rsquo;re only hitting up google.&lt;/p&gt;
+
+&lt;h2 id=&#34;inspecting-with-developer-tools&#34;&gt;Inspecting with developer tools.&lt;/h2&gt;
+
+&lt;p&gt;Right, I&amp;rsquo;m hoping you came here to find out how to get sports stats or some other publically available statistics, after reading my post &lt;a href=&#34;https://davejkane.github.io/does-football-follow-pareto&#34;&gt;Does football follow the pareto principal?&lt;/a&gt; So the first thing your going to want to do is head over to &lt;a href=&#34;http://www.bbc.com/sport/football/results&#34;&gt;BBC football results&lt;/a&gt; with chrome. I hope you&amp;rsquo;re using chrome, if not, try to follow along anyway, but make sure you&amp;rsquo;re using a browser with some sort of decent developer tools. For the record, I did not get my stats from the BBC, but I can&amp;rsquo;t tell you where I got them. Even though sports statistics are public knowledge, scraping a website to steal, I mean scrape them, probably goes against some kind of terms of service and is most likely frowned upon.&lt;/p&gt;
+
+&lt;p&gt;Anyhoo, find a game that has a report link on the right side. Right click on the link and Inspect Element. I think that&amp;rsquo;s what it&amp;rsquo;s called, my chrome is in Danish. That will take you to the location of an anchor element for that link. Now in the element inspector, right click on the anchor element and select copy &amp;gt; copy selector.&lt;/p&gt;
+
+&lt;p&gt;Cool now we&amp;rsquo;re ready to get the link for that programmatically.&lt;/p&gt;
+
+&lt;h2 id=&#34;retrieving-information-with-selenium&#34;&gt;Retrieving information with selenium&lt;/h2&gt;
+
+&lt;p&gt;So let&amp;rsquo;s change our script to:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;from selenium import webdriver
+import time
+
+driver = webdriver.PhantomJS()
+driver.set_window_size(1024, 768)
+driver.get(&#39;https://google.com&#39;)
+print &#39;Sleeping&#39;
+time.sleep(3)
+link = driver.find_element_by_css_selector(&#39;PASTE_YOUR_SELECTOR_HERE&#39;)
+print link.get_attribute(&#39;href&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Alternatively you could have copied the XPath from developer tools and used&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;driver.find_element_by_xpath()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;instead. I prefer css selectors just because I&amp;rsquo;m used to them from jquery.&lt;/p&gt;
+
+&lt;p&gt;So there you go, you just programmatically got some information from a webpage. Pretty sweet.
+Now, you&amp;rsquo;ll notice that the anchor tag there has a class of report, so what we could instead have done, is return a list of all the report anchors like so:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;links = driver.find_elements_by_css_selector(&#39;a.report&#39;)
+for link in links:
+    print link.get_attribute(&#39;href&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now we&amp;rsquo;re talking. Notice that was find_element&lt;strong&gt;s&lt;/strong&gt;_by_css_selector, that extra s in there gives us a list of all matches.&lt;/p&gt;
+
+&lt;h2 id=&#34;interacting-with-the-page&#34;&gt;Interacting with the page&lt;/h2&gt;
+
+&lt;p&gt;So sometimes, we&amp;rsquo;re going to have to interact with the page, such as clicking on things, or the bane of all webscrapers, scrolling down. Now a lot of tutorials online make scrolling down a web page sound way more complicated than it ought to be. It should in fact be this easy&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;def scroll():
+   print &#39;Scrolling&#39;
+   driver.execute_script(&amp;quot;window.scrollTo(0, document.body.scrollHeight);&amp;quot;)
+   time.sleep(5)
+
+for _ in range(12):
+    scroll()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;That scrolls to the bottom of the page 12 times, waiting for 5 seconds each time to allow items to load. We&amp;rsquo;ve used driver.execute_script() to allow us to use javascript directly on the page. We can use that to click on elements as well. Say there was a tab called &amp;ldquo;stats&amp;rdquo; that didn&amp;rsquo;t have a href and it was the third on a tab bar. We can get the selector from developer tools and click on the tab using the following script.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;statsbutton = driver.find_element_by_css_selector(&#39;div.tabs &amp;gt; ul &amp;gt; li:nth-child(3)&#39;)
+driver.execute_script(&amp;quot;arguments[0].click();&amp;quot;, statsbutton) 
+print &#39;Clicking&#39;
+time.sleep(5)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;again we add a sleep event just to allow any javascript to load. 5 seconds is probably a bit conservative, you can most likely go a bit shorter than that.&lt;/p&gt;
+
+&lt;h2 id=&#34;looping-through-multiple-web-pages&#34;&gt;Looping through multiple web pages&lt;/h2&gt;
+
+&lt;p&gt;So what if you scrape a page to get a whole bunch of urls and then you want to go to each of those pages and get some more information, for example go to each game of the season and collect stats. Well, my recommendation would be to first write your list of urls to file. Because scripting is sometimes a pain in the ass, and you might make a mistake. So you don&amp;rsquo;t want to have to go to the front page every time you make a typo and trawl for links that you&amp;rsquo;ve already collected. So, to write to a file, simply:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;file = &#39;gamelinks.txt&#39;
+target = open(file, &#39;w&#39;)
+
+for link in links: #links collected earlier in the script.
+target.write(&amp;quot;%s\n&amp;quot; % link.get_attribute(&#39;href&#39;))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then you want to create a new script that goes through your text file and gets the stats. First get the links into a list.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;links = [link.rstrip(&#39;\n&#39;) for link in open(&#39;gamelinks.txt&#39;)]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then you want to loop through the links. Here is the complete example script.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;from selenium import webdriver
+from selenium.common.exceptions import TimeoutException
+import time
+import io
+
+driver = webdriver.PhantomJS() # or add to your PATH
+driver.set_window_size(1024, 768) # optional
+
+links = [link.rstrip(&#39;\n&#39;) for link in open(&#39;fixtures.txt&#39;)]
+linksLength = len(links)
+
+for index, value in enumerate(links):
+    print &#39;Starting&#39;
+    driver.set_page_load_timeout(60)
+    while True:
+        try:
+            driver.get(value)
+        except TimeoutException:
+            print &amp;quot;Timeout, retrying...&amp;quot;
+            continue
+        else:
+            break
+    print &#39;Sleeping&#39;
+    time.sleep(3)
+    dataContainer = driver.find_element_by_css_selector(&#39;div.dataContainer&#39;)
+    dataJSON = dataContainer.get_attribute(&#39;data-game&#39;)
+    file = &#39;data{}.json&#39;.format(index)
+    target = io.open(file, &#39;w&#39;, encoding=&amp;quot;utf-8&amp;quot;)
+    target.write(dataJSON)
+    target.close()
+    print &#39;File {} of {} written&#39;.format(index, linksLength - 1)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So let&amp;rsquo;s go through that. First the usual imports, plus selenium&amp;rsquo;s TimeoutExeption. That&amp;rsquo;s because if a page is too slow, it will crash your script and you&amp;rsquo;ll have to do over, and we don&amp;rsquo;t want that. We&amp;rsquo;ll also import io for writing json, because footballers often have funny names that aren&amp;rsquo;t ascii, so we need utf-8.&lt;/p&gt;
+
+&lt;p&gt;We make an enumerated for loop over the links so that we have access to the index for file naming and printing purposes. You&amp;rsquo;ll notice that there&amp;rsquo;s a lot of printing statements in there. I like to know what&amp;rsquo;s going on while my scripts are running. Web scraping scripts can be excruciatingly slow, so those print statements are a sanity check.&lt;/p&gt;
+
+&lt;p&gt;We do a try except on the driver.get so that we can handle pages that are taking too long.&lt;/p&gt;
+
+&lt;p&gt;So in this example we just happened to stumble upon a website that stores it&amp;rsquo;s data in json format right in a data attribute on the page. Yes this awesomeness does sometimes happen in the real world. In fact, that&amp;rsquo;s how I got the premier league stats from an unidentified website. The rest of the script saves each game&amp;rsquo;s json object to it&amp;rsquo;s own file. Again this is for ease of working with. Also, there are 380 games in a premier league season, if you&amp;rsquo;re script craps out after 250 games or something, you really don&amp;rsquo;t want to start from that start again, as this could take hours.&lt;/p&gt;
+
+&lt;h2 id=&#34;awesome&#34;&gt;Awesome&lt;/h2&gt;
+
+&lt;p&gt;So there you go, that&amp;rsquo;s how to scrape a whole bunch of javascipt rendered webpages that follow a similar template. Easy peasy. It&amp;rsquo;s slow, much slower that pinging the server for the html page, but that&amp;rsquo;s not going to get you much in the days of the single page app.&lt;/p&gt;
+
+&lt;h2 id=&#34;what-now&#34;&gt;What now?&lt;/h2&gt;
+
+&lt;p&gt;So now that we have a whole bunch of JSON files, what are we going to do with them? Well, I suggest storing your data in an SQLite database, and that&amp;rsquo;s what my next post is all about. So join me to see &lt;a href=&#34;https://davejkane.github.io/json-sqlite-csv&#34;&gt;how I made an SQLite file&lt;/a&gt; that contains all of the stats from the &lt;sup&gt;2015&lt;/sup&gt;&amp;frasl;&lt;sub&gt;16&lt;/sub&gt; English Premier League season.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

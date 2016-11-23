@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Dave J Kane</title>
+    <link>https://davejkane.github.io/tags/d3/index.xml</link>
+    <description>Recent content on Dave J Kane</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-uk</language>
+    <atom:link href="https://davejkane.github.io/tags/d3/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>A CDF Graph with Hover Tooltips Using D3.js</title>
+      <link>https://davejkane.github.io/post/D3-CDF-with-hover/</link>
+      <pubDate>Sun, 20 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://davejkane.github.io/post/D3-CDF-with-hover/</guid>
+      <description>
+
+&lt;h1 id=&#34;creating-a-cdf-graph-with-d3-from-csv-data&#34;&gt;Creating a CDF graph with D3 from csv data&lt;/h1&gt;
+
+&lt;p&gt;In this short post, I&amp;rsquo;ll show you how I made the cumulative density function graph, with hover over tooltips, as used in my previous post &lt;a href=&#34;https://davejkane.github.io/does-football-follow-pareto&#34;&gt;&amp;ldquo;Does football follow the pareto principal&amp;rdquo;&lt;/a&gt;. Nothing here is particularly innovative, it&amp;rsquo;s mostly reuse of code from the net.&lt;/p&gt;
+
+&lt;h2 id=&#34;cdf-graph&#34;&gt;CDF graph.&lt;/h2&gt;
+
+&lt;p&gt;First up, here&amp;rsquo;s the graph.&lt;/p&gt;
+
+&lt;div id=&#34;paretoGraph&#34;&gt;&lt;/div&gt;
+
+&lt;p&gt;And here&amp;rsquo;s the full code for the graph&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/*Here up open up our csv file with the d3.csv function and load it into the dataset variable.
+Our csv file contains two columms , players and goals with the names of the players and the
+number of goals that player scored in the season. */
+var dataSet;
+d3.csv(&#39;../scorers.csv&#39;, function(d) {
+    dataSet = d;
+
+/*To make the cumulative line, create an array called cumgoals.
+Loop through the dataset and append the cumulative goals to the array*/
+cumGoals = [];
+cumGoals.push(dataSet[0].goals);
+dataLength = dataSet.length;
+for (i = 1; i &amp;lt; dataLength; i++) {
+    cumGoals.push(parseInt(dataSet[i].goals) + parseInt(cumGoals[i - 1]))
+};
+
+/*Calculate the total number of goals.*/
+totalGoals = d3.sum(dataSet, function(d) {
+    return d.goals;
+});
+
+/*Defining the margins, width and height of the graph.*/
+var margin = {top: 30, right: 20, bottom: 50, left: 50},
+width = 480 - margin.left - margin.right,
+//Keep the height small for data banking
+height = 240 - margin.top - margin.bottom;
+
+/*Defining the x and y scales*/
+var x = d3.scaleLinear().range([0, width]);
+var y = d3.scaleLinear().range([height, 0]);
+
+/*Define the axes*/
+var formatAsPercentage = d3.format(&#39;.0%&#39;);
+var xAxis = d3.axisBottom().scale(x).ticks(5).tickFormat(formatAsPercentage);
+var yAxis = d3.axisLeft().scale(y).ticks(5).tickFormat(formatAsPercentage);
+
+/*Create line function for percentage of goals per player*/
+var valueline = d3.line()
+.x(function(d, i) { return x(i / (dataSet.length - 1)); })
+.y(function(d) { return y(d.goals / totalGoals)});
+
+/*Create the line function for the cumulative line (CDF)*/
+var totalline = d3.line()
+.x(function(d, i){ return x(i / (dataSet.length - 1)); })
+.y(function(d){
+    return y(d / totalGoals);
+});
+
+// Define the div for the tooltip
+var div = d3.select(&amp;quot;body&amp;quot;).append(&amp;quot;div&amp;quot;)   
+.attr(&amp;quot;class&amp;quot;, &amp;quot;tooltip&amp;quot;)               
+.style(&amp;quot;opacity&amp;quot;, 0);
+
+// Create the SVG element
+var svg = d3.select(&amp;quot;#paretoGraph&amp;quot;)
+.append(&amp;quot;svg&amp;quot;)
+    .attr(&amp;quot;width&amp;quot;, width + margin.left + margin.right)
+    .attr(&amp;quot;height&amp;quot;, height + margin.top + margin.bottom)
+.append(&amp;quot;g&amp;quot;)
+    .attr(&amp;quot;transform&amp;quot;, 
+          &amp;quot;translate(&amp;quot; + margin.left + &amp;quot;,&amp;quot; + margin.top + &amp;quot;)&amp;quot;);
+
+// Scale the range of the data
+x.domain([0, 1]);
+y.domain([0, 1]);
+
+
+// Add the valueline path.
+svg.append(&amp;quot;path&amp;quot;)
+    .attr(&amp;quot;class&amp;quot;, &amp;quot;line&amp;quot;)
+    .attr(&amp;quot;d&amp;quot;, valueline(dataSet));
+
+// Add the totalline path
+svg.append(&amp;quot;path&amp;quot;)
+    .attr(&amp;quot;class&amp;quot;, &amp;quot;line&amp;quot;)
+    .attr(&amp;quot;d&amp;quot;, totalline(cumGoals));
+
+
+// Add the scatterplot
+svg.selectAll(&amp;quot;dot&amp;quot;)    
+    .data(dataSet)          
+.enter().append(&amp;quot;circle&amp;quot;)                               
+    .attr(&amp;quot;r&amp;quot;, 2)       
+    .attr(&amp;quot;cx&amp;quot;, function(d, i) { return x(i / (dataSet.length - 1)); })      
+    .attr(&amp;quot;cy&amp;quot;, function(d) { return y(d.goals / totalGoals); })
+    .on(&amp;quot;mouseover&amp;quot;, function(d) {      
+        div.transition()        
+            .duration(200)      
+            .style(&amp;quot;opacity&amp;quot;, .9);      
+        div .html(d.players + &#39;: &#39; + d.goals)   
+            .style(&amp;quot;left&amp;quot;, (d3.event.pageX) + &amp;quot;px&amp;quot;)     
+            .style(&amp;quot;top&amp;quot;, (d3.event.pageY - 28) + &amp;quot;px&amp;quot;);    
+        })                  
+    .on(&amp;quot;mouseout&amp;quot;, function(d) {       
+        div.transition()        
+            .duration(500)      
+            .style(&amp;quot;opacity&amp;quot;, 0);   
+    });
+
+// Add the X Axis
+svg.append(&amp;quot;g&amp;quot;)
+    .attr(&amp;quot;class&amp;quot;, &amp;quot;x axis&amp;quot;)
+    .attr(&amp;quot;transform&amp;quot;, &amp;quot;translate(0,&amp;quot; + height + &amp;quot;)&amp;quot;)
+    .call(xAxis);
+
+// Add the X Axis label
+svg.append(&amp;quot;text&amp;quot;)
+        .attr(&amp;quot;transform&amp;quot;, &amp;quot;translate(&amp;quot; + (width / 2) + &amp;quot; ,&amp;quot; + (height + margin.bottom - 10) + &amp;quot;)&amp;quot;)
+        .style(&amp;quot;text-anchor&amp;quot;, &amp;quot;middle&amp;quot;)
+        .text(&amp;quot;Percent of Players&amp;quot;);
+
+// Add the Y Axis
+svg.append(&amp;quot;g&amp;quot;)
+    .attr(&amp;quot;class&amp;quot;, &amp;quot;y axis&amp;quot;)
+    .call(yAxis);
+
+// Add the Y Axis label
+svg.append(&amp;quot;text&amp;quot;)
+        .attr(&amp;quot;transform&amp;quot;, &amp;quot;rotate(-90)&amp;quot;)
+        .attr(&amp;quot;y&amp;quot;, 0 - margin.left)
+        .attr(&amp;quot;x&amp;quot;,0 - (height / 2))
+        .attr(&amp;quot;dy&amp;quot;, &amp;quot;1em&amp;quot;)
+        .style(&amp;quot;text-anchor&amp;quot;, &amp;quot;middle&amp;quot;)
+        .text(&amp;quot;Percent of Goals&amp;quot;);
+
+// Close the csv function
+});
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So hopefully that reads well enough. As I said, there&amp;rsquo;s nothing particularly innovative about this graph.&lt;/p&gt;
+
+&lt;script src=&#34;https://d3js.org/d3.v4.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://davejkane.github.io/paretoscorers.js&#34;&gt;&lt;/script&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

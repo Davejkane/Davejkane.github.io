@@ -3,24 +3,32 @@
   
   <url>
     <loc>https://davejkane.github.io/</loc>
+    <lastmod>2016-11-21T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://davejkane.github.io/post/does-football-follow-pareto/</loc>
+    <lastmod>2016-11-21T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://davejkane.github.io/post/D3-CDF-with-hover/</loc>
+    <lastmod>2016-11-20T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://davejkane.github.io/post/json-sqlite-csv/</loc>
+    <lastmod>2016-11-20T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://davejkane.github.io/post/webscraping-fun-stats/</loc>
+    <lastmod>2016-11-20T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://davejkane.github.io/about/</loc>
     <lastmod>2016-11-15T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://davejkane.github.io/Does-football-follow-pareto/</loc>
-    <lastmod>2016-11-15T00:00:00+00:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://davejkane.github.io/D3-CDF-with-hover-from-csv/</loc>
-  </url>
-  
-  <url>
-    <loc>https://davejkane.github.io/Webscraping-for-fun-and-stats/</loc>
-  </url>
-  
-  <url>
-    <loc>https://davejkane.github.io/json-to-sqlite-to-csv/</loc>
   </url>
   
 </urlset>
