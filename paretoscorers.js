@@ -1,6 +1,6 @@
 /*Here up open up our csv file with the d3.csv function and load it into the dataset variable.*/
 var dataSet;
-d3.csv('../scorers.csv', function(d) {
+d3.csv('../../scorers.csv', function(d) {
 	dataSet = d;
 
 /*To make the cumulative line, create an array called cumgoals.
