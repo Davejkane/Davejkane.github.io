@@ -7,7 +7,7 @@
 		<meta name="author" content="Dave J Kane">
 		<meta name="description" content="A Data and Programming Blog">
 		<meta name="generator" content="Hugo 0.17" />
-		<title>Does Football Follow the Pareto Principal &middot; Dave J Kane</title>
+		<title>Embedding a D3 graph in a Hugo website &middot; Dave J Kane</title>
 		<link rel="shortcut icon" href="https://davejkane.github.io/images/favicon.ico">
 		<link rel="stylesheet" href="https://davejkane.github.io/css/style.css">
 		<link rel="stylesheet" href="https://davejkane.github.io/css/highlight.css">
@@ -39,22 +39,18 @@
         <section id="wrapper">
             <article class="post">
                 <header>
-                    <h1>Does Football Follow the Pareto Principal</h1>
+                    <h1>Embedding a D3 graph in a Hugo website</h1>
                     <h2 class="headline">
-                    November 21, 2016 
+                    November 25, 2016 
                     <br>
                     
                     
                         
-                            <a href="https://davejkane.github.io/tags/football">Football</a>
+                            <a href="https://davejkane.github.io/tags/d3">D3</a>
                         
-                            <a href="https://davejkane.github.io/tags/goals">Goals</a>
+                            <a href="https://davejkane.github.io/tags/javascript">Javascript</a>
                         
-                            <a href="https://davejkane.github.io/tags/top-scorers">Top Scorers</a>
-                        
-                            <a href="https://davejkane.github.io/tags/premier-league">Premier League</a>
-                        
-                            <a href="https://davejkane.github.io/tags/data">Data</a>
+                            <a href="https://davejkane.github.io/tags/hugo">Hugo</a>
                         
                     
                     
@@ -63,36 +59,47 @@
                 <section id="post-body">
                     
 
-<p>Let&rsquo;s keep this first post nice and basic.</p>
+<h2 id="hugo-and-d3">Hugo and D3</h2>
 
-<p><em>If you&rsquo;re intested in data science, you may be interested in the accompanying posts <a href="/webscraping-fun-stats">Web scraping for fun and stats</a>, <a href="/json-sqlite-csv">JSON to SQLite to csv - Data transforations</a> and <a href="/D3-CDF-with-hover">D3: A CDF graph with hover tooltips</a></em></p>
+<p>I&rsquo;ve seen a couple of posts on forums asking how to get a D3 graph or animation using a static site generator like Hugo. It&rsquo;s actually very simple. You see, you can put HTML right in along side your markdown.</p>
 
-<h2 id="the-pareto-principal">The Pareto principal</h2>
+<h2 id="adding-a-container-div">Adding a Container div</h2>
 
-<p>Vilfredo Pareto was an Italian polymath who introduced some important concepts in microeconomics. But he&rsquo;s mostly famous for his most meme-able observation: the <sup>80</sup>&frasl;<sub>20</sub> rule. He noticed that in his time, about 20% of Italians owned about 80% of the land. Since then people have noticed this <sup>80</sup>&frasl;<sub>20</sub> rule all over the place. 20% of your customers make up 80% of your sales. 20% of the global population have 80% of the wealth, 20% of your friends are having 80% of the sex. etc. etc.</p>
+<p>So what you want to do is, in your markdown file, create a Div with an ID where you want to put the graph. Like this:</p>
 
-<h2 id="football">Football</h2>
+<pre><code>## Some smart heading
+blah blah blah, interesting fact nugget about data
+and here's a graph that shows off my wisdom
+&lt;div id=&quot;myGraph&quot;&gt;&lt;/div&gt;
+</code></pre>
 
-<p>But our question is, does football fit this pattern? Specifically, I hypothesise that 20% of the players score 80% of the goals. And by players I mean anyone who at least made it to the bench, so no reserves. For our sample I&rsquo;ll be using the last complete season of the English Premier League - 2015-16.</p>
+<h2 id="attaching-to-your-div-in-your-javascript">Attaching to your div in your javascript</h2>
 
-<p>So well, here&rsquo;s our graph.</p>
+<p>So then, in your javascript you want to do the following:</p>
 
-<div id="paretoGraph"></div>
+<pre><code>var svg = d3.select(&quot;#myGraph&quot;)
+.append(&quot;svg&quot;)
+....
+</code></pre>
 
-<p>You can hover over the individual data points of the bottom line to see the players and how many goals they scored. It&rsquo;s a little cramped with so many data points.</p>
+<h2 id="saving-your-javascript-in-a-separate-file">Saving your javascript in a separate file</h2>
 
-<p>The bottom line represents the percentage of goals each player has scored whereas the top line represents the cumulation of the goals. The bottom line can easily mislead you into thinking that scoring is reasonably equally distributed, but the cumulation line you can clearly see that infact:</p>
+<p>One caveat. You&rsquo;ll have to save your javascript as a separate file, because otherwise the markdown processor will escape out all the important javascript stuff and your graph won&rsquo;t work. Most tutorials for D3 you see online have CSS and Javascript inline with the HTML, nuh uh. Don&rsquo;t do that.</p>
 
-<h2 id="it-s-true">It&rsquo;s True!</h2>
+<h2 id="loading-d3-first">Loading D3 first.</h2>
 
-<p>Around 20% of the players do indeed score around 80% of the goals.</p>
+<p>So at the end of your markdown file, you&rsquo;ll want to link to two scripts like this:</p>
 
-<h2 id="what-s-next">What&rsquo;s next</h2>
+<pre><code>&lt;script src=&quot;https://d3js.org/d3.v4.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;/mygraph.js&quot;&gt;&lt;/script&gt;
+</code></pre>
 
-<p>So that was a really basic alternative way to view some common football stats. I plan to follow up with more football related articles soon, especially seeing as I have a very detailed football data set. More about that <a href="/webscraping-fun-stats">here</a>.</p>
+<p>You&rsquo;ll need to load the D3 library first for your graph to render. No webpack here. Make sure to save your javascript file in your static folder. If you have a lot of static files, you may want to keep it in a separate js folder and then your script link will look like this:</p>
 
-<script src="https://d3js.org/d3.v4.min.js"></script>
-<script src="/paretoscorers.js"></script>
+<pre><code>&lt;script src=&quot;/js/mygraph.js&quot;&gt;&lt;/script&gt;
+</code></pre>
+
+<p>So there you go, it&rsquo;s very easy, the main things to consider are, keeping your js and css separate from your html, and creating the container div and script links as html directly in your markdown. I hope this helps.</p>
 
                 </section>
             </article>
@@ -105,7 +112,7 @@
                         </div>
                     </a>
                 <section id="sharing">
-                    <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fdavejkane.github.io%2fpost%2fdoes-football-follow-pareto%2f - Does%20Football%20Follow%20the%20Pareto%20Principal by @davejkane"><span class="icon-twitter"> Tweet</span></a>
+                    <a class="twitter" href="https://twitter.com/intent/tweet?text=https%3a%2f%2fdavejkane.github.io%2fpost%2fd3-hugo%2f - Embedding%20a%20D3%20graph%20in%20a%20Hugo%20website by @davejkane"><span class="icon-twitter"> Tweet</span></a>
 
 <a class="facebook" href="#" onclick="
     window.open(
@@ -121,9 +128,9 @@
             <div id="disqus_thread"></div>
 <script type="text/javascript">
     var disqus_shortname = 'http-davejkane-com';
-    var disqus_identifier = 'https:\/\/davejkane.github.io\/post\/does-football-follow-pareto\/';
-    var disqus_title = 'Does Football Follow the Pareto Principal';
-    var disqus_url = 'https:\/\/davejkane.github.io\/post\/does-football-follow-pareto\/';
+    var disqus_identifier = 'https:\/\/davejkane.github.io\/post\/d3-hugo\/';
+    var disqus_title = 'Embedding a D3 graph in a Hugo website';
+    var disqus_url = 'https:\/\/davejkane.github.io\/post\/d3-hugo\/';
 
     (function() {
         var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Dave J Kane</title>
+    <link>https://davejkane.github.io/categories/hugo/index.xml</link>
+    <description>Recent content on Dave J Kane</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-uk</language>
+    <atom:link href="https://davejkane.github.io/categories/hugo/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Embedding a D3 graph in a Hugo website</title>
+      <link>https://davejkane.github.io/post/d3-hugo/</link>
+      <pubDate>Fri, 25 Nov 2016 00:00:00 +0000</pubDate>
+      
+      <guid>https://davejkane.github.io/post/d3-hugo/</guid>
+      <description>
+
+&lt;h2 id=&#34;hugo-and-d3&#34;&gt;Hugo and D3&lt;/h2&gt;
+
+&lt;p&gt;I&amp;rsquo;ve seen a couple of posts on forums asking how to get a D3 graph or animation using a static site generator like Hugo. It&amp;rsquo;s actually very simple. You see, you can put HTML right in along side your markdown.&lt;/p&gt;
+
+&lt;h2 id=&#34;adding-a-container-div&#34;&gt;Adding a Container div&lt;/h2&gt;
+
+&lt;p&gt;So what you want to do is, in your markdown file, create a Div with an ID where you want to put the graph. Like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;## Some smart heading
+blah blah blah, interesting fact nugget about data
+and here&#39;s a graph that shows off my wisdom
+&amp;lt;div id=&amp;quot;myGraph&amp;quot;&amp;gt;&amp;lt;/div&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;attaching-to-your-div-in-your-javascript&#34;&gt;Attaching to your div in your javascript&lt;/h2&gt;
+
+&lt;p&gt;So then, in your javascript you want to do the following:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;var svg = d3.select(&amp;quot;#myGraph&amp;quot;)
+.append(&amp;quot;svg&amp;quot;)
+....
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;saving-your-javascript-in-a-separate-file&#34;&gt;Saving your javascript in a separate file&lt;/h2&gt;
+
+&lt;p&gt;One caveat. You&amp;rsquo;ll have to save your javascript as a separate file, because otherwise the markdown processor will escape out all the important javascript stuff and your graph won&amp;rsquo;t work. Most tutorials for D3 you see online have CSS and Javascript inline with the HTML, nuh uh. Don&amp;rsquo;t do that.&lt;/p&gt;
+
+&lt;h2 id=&#34;loading-d3-first&#34;&gt;Loading D3 first.&lt;/h2&gt;
+
+&lt;p&gt;So at the end of your markdown file, you&amp;rsquo;ll want to link to two scripts like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;script src=&amp;quot;https://d3js.org/d3.v4.min.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;
+&amp;lt;script src=&amp;quot;/mygraph.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;You&amp;rsquo;ll need to load the D3 library first for your graph to render. No webpack here. Make sure to save your javascript file in your static folder. If you have a lot of static files, you may want to keep it in a separate js folder and then your script link will look like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;script src=&amp;quot;/js/mygraph.js&amp;quot;&amp;gt;&amp;lt;/script&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;So there you go, it&amp;rsquo;s very easy, the main things to consider are, keeping your js and css separate from your html, and creating the container div and script links as html directly in your markdown. I hope this helps.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
